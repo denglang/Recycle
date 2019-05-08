@@ -1,0 +1,1189 @@
+﻿
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!--
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">  -->
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css">
+
+    <!--<script src="/js/tether.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether-tooltip/1.2.0/js/tooltip.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-40048805-1"></script>
+    <script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+
+            gtag('js', new Date());
+            gtag('config', 'UA-40048805-1');
+    </script>
+    <script src="//sliver.iowa.gov/sliver.js" async defer></script>
+
+    <style>
+        body, html {
+            background-image: url("~/image/lake.jpg");
+            height: 100%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            position: relative;
+        }
+
+
+        .logo {
+            background-image: url('image/mcdeid_ada_hayden.png');
+            /*
+         background-image: url('image/mcdeid_ada_hayden_whitetext1.svg'); */
+            width: 250px;
+            height: 50px;
+            display: inline-block;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            z-index: 5;
+        }
+
+            .logo:hover {
+                width: 500px;
+                height: 100px;
+            }
+
+        #BasemapToggle {
+            position: absolute;
+            top: 40px;
+            left: 4px;
+            z-index: 10;
+        }
+
+        #map {
+            /* display: none; */
+            margin-left: 30px;
+            margin-bottom: 60px;
+            width: 700px;
+            height: 500px;
+            border: 1px solid #000;
+            position: relative;
+            padding: 1px;
+            border: solid 2px #444;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+        #search {
+            position: absolute;
+            z-index: 50;
+            left: 65px;
+            display: none;
+        }
+
+        #LocateButton {
+            position: absolute;
+            left: 140px;
+            z-index: 50;
+        }
+
+        #spatialSearch {
+            position: relative;
+            display: none;
+            width: 240px;
+            float: left;
+        }
+
+        .lang {
+            overflow: auto;
+        }
+
+        #idnr_logo_link {
+            float: left;
+        }
+
+        #title {
+            <!-- float: left; -->
+            width: 200px;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        #iowa_sliver_spacer {
+            height: 5% !important;
+        }
+
+        #iowa_sliver #iowa_sliver_bar {
+            height: 5%;
+        }
+
+        #message {
+            font-size: 1.5em;
+            color: red;
+        }
+
+        .right {
+            position: absolute;
+            right: 0px;
+            width: 300px;
+            border: 3px solid #73AD21;
+            padding: 10px;
+        }
+
+        #rightPane {
+            border: none;
+            padding: 0;
+            width: 228px;
+            position: relative;
+            top: 150px;
+        }
+
+        .templatePicker {
+            border: solid 2px #444;
+        }
+
+        #templatePickerDiv {
+            visibility: hidden;
+        }
+
+        .btn {
+            border: 2px solid black;
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Green */
+        .stop {
+            border-color: #4CAF50;
+            color: black;
+        }
+
+        dj_ie .infowindow .window .top .right .user .content {
+            position: relative;
+        }
+
+        .dj_ie .simpleInfoWindow .content {
+            position: relative;
+        }
+
+        .esriAttributeInspector .atiLayerName {
+            display: none;
+        }
+
+        .esriAttributeInspector .atiButton {
+            width: 34%;
+        }
+
+        #editorDiv {
+            position: relative;
+            top: 20px;
+            display: none;
+        }
+
+        p #openEditPage {
+            margin: 0;
+            display: inline;
+        }
+    </style>
+    <script src="https://js.arcgis.com/3.26/"></script>
+    <script>
+		function getfile(elementId, fileName){$(document).ready(function() {
+				var all
+				//var material = ["Australia", "Bangladesh", "Denmark", "Hong Kong", "Indonesia", "Netherlands", "New Zealand", "South Africa"];
+
+				var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+				xmlhttp.onreadystatechange = function () {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						all = (xmlhttp.responseText).split(",");
+						//$("#material").select2({
+						$(elementId).select2({
+						  data: all
+						});
+						//material.push(lst);
+						//all=material.concat(lst)
+					}
+				}
+
+				//xmlhttp.open("GET", "test.txt", true);
+				//xmlhttp.open("GET", "recycle_materials.txt", true);
+				xmlhttp.open("GET", fileName, true);
+				xmlhttp.send();
+		  })
+		};
+        getfile("#material", "/data/Recycle_materials.txt")
+        getfile("#city", "/data/IowaCity.txt")
+
+		  var map;
+		  var editorWidget;
+		  var updateFeature;
+		  var attInspector;
+		  var editToolbar;
+		  var templatePicker;
+		  var bool = false;
+		  var title;
+		  var q,q1,q2,q3,q4;
+
+		require([
+		  "esri/map",
+		  "esri/SnappingManager",
+		  "esri/dijit/editing/Editor",
+		  "esri/dijit/editing/TemplatePicker",
+		  "esri/layers/GraphicsLayer",
+		   "esri/layers/FeatureLayer",
+		   "esri/tasks/GeometryService",
+			"esri/toolbars/draw",
+			"esri/toolbars/edit",
+			"esri/graphic",
+			"esri/config",
+			"esri/geometry/webMercatorUtils",
+			"esri/dijit/AttributeInspector",
+			"esri/dijit/InfoWindow",
+			"dojo/keys",
+			"dojo/parser",
+			"dojo/_base/array",
+			"dijit/form/Button",
+			"dojo/dom-construct",
+
+			"dojo/_base/event",
+			"dojo/_base/lang",
+			 "dijit/registry",
+			"dojo/i18n!esri/nls/jsapi",
+
+		"esri/urlUtils",
+		  "esri/SpatialReference",
+		  "esri/graphicsUtils",
+		  "esri/dijit/BasemapToggle",
+		  "esri/dijit/Search",
+		  "esri/dijit/LocateButton",
+		  //"esri/dijit/BasemapGallery",
+		 // "dijit/layout/ContentPane",
+		 // "dijit/TitlePane",
+		 "esri/dijit/Scalebar",
+		  "esri/layers/ArcGISDynamicMapServiceLayer",
+
+		  "esri/tasks/FeatureSet",
+		  "esri/graphic",
+		  "esri/tasks/QueryTask",
+		  "esri/tasks/query",
+		  "esri/symbols/SimpleMarkerSymbol",
+		  "esri/symbols/SimpleLineSymbol",
+		  "esri/symbols/SimpleFillSymbol",
+
+		  "esri/InfoTemplate",
+		  "dojo/_base/Color",
+		  "dojo/dom",
+		  "dojo/on",
+		  "dojo/parser",
+		  "dijit/layout/BorderContainer",
+		  "dijit/layout/ContentPane",
+		  "dojo/domReady!"
+		], function(Map, SnappingManager, Editor, TemplatePicker, GraphicsLayer, FeatureLayer, GeometryService,
+        Draw, Edit,Graphic, EsriConfig, webMercatorUtils,  AttributeInspector, infoWindow,keys, parser, arrayUtils, Button, domConstruct,event,lang,registry,
+		i18n, urlUtils, SpatialReference, graphicsUtils, BasemapToggle, Search, LocateButton, Scalebar, ArcGISDynamicMapServiceLayer, FeatureSet,
+		Graphic, QueryTask, Query, SimpleMarkerSymbol, SimpleLineSymbol,SimpleFillSymbol, InfoTemplate, Color, dom, on,parser) {
+
+
+		urlUtils.addProxyRule({
+		  urlPrefix: "https://dev-7.iowadnr.gov",
+		  proxyUrl: "/maps/recycle/DotNet/proxy.ashx"
+		});
+
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//editing ready
+		 //parser.parse();
+		 i18n.toolbars.draw.start += "<br/>Press <b>CTRL</b> to enable snapping";
+        i18n.toolbars.draw.addPoint += "<br/>Press <b>CTRL</b> to enable snapping";
+		//esriConfig.defaults.geometryService = new GeometryService("https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer");
+		 var geometryService = new GeometryService("https://programs.iowadnr.gov/geospatial/rest/services/Geometry/GeometryServer");
+		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//esriConfig.defaults.io.proxyUrl = "proxy.ashx"
+		//esriConfig.defaults.io.alwaysUseProxy = false;
+		  //create map and add layer
+		  map = new Map("map", {
+			basemap: "topo" ,
+			center: [-93.9789, 42.1234],
+			zoom: 7
+		  });
+
+		  //map.on("layers-add-result", initEditing);
+
+		  var search = new Search({
+			enableInfoWindow: false,  //this will hide the result window
+			//value: "Address,name,zip, or lat long"
+				map: map
+			 }, "search"); //will start in showMap function
+
+		  on(search,'search-results',function(e){
+				var searchString = document.getElementById("search_input").value; //ESRI search function override my
+				//tag setup (id='search') and change it to 'search_input'
+				//alert("search result event called " + searchString);
+				//console.log(searchString);
+				//the city name is always before IA
+				var textList = searchString.split(",");
+				//console.log(textList);
+				if (textList.length >=2) {
+					var cityName = textList[textList.indexOf(" IA")-1].trim();
+					console.log(cityName);
+					QueryCity(cityName);	//pass QueryCity as a parameter,otherwise,
+						//QueryCity is not accessible since it is a function inside displayQueryLayer
+				} else {
+					console.log(textList[0]);
+					if ( textList[0].length==5 && parseInt(textList[0]) && textList[0]<= 52809 ) {
+						console.log("This is Iowa Zip code");
+						QueryCity(textList[0]);
+					}
+				}
+		  })
+
+		   toggle = new BasemapToggle({
+				map: map,
+				basemap: "satellite"  //street
+			  }, "BasemapToggle");
+			  toggle.startup();
+
+			 /*
+			 geoLocate = new LocateButton({
+				map: map
+			  }, "LocateButton");
+			  geoLocate.startup();
+			  */
+
+			/*
+			var basemapGallery = new BasemapGallery({
+				showArcGISBasemaps: true,
+				map: map
+			  }, "basemapGallery");
+			  basemapGallery.startup();
+
+			  basemapGallery.on("error", function(msg) {
+				console.log("basemap gallery error:  ", msg);
+			  });
+				*/
+		 var scalebar = new Scalebar({
+          map: map,
+          // "dual" displays both miles and kilometers
+          // "english" is the default, which displays miles
+          // use "metric" for kilometers
+		  attachTo: "bottom-left",
+          scalebarUnit: "english"//"dual"
+        });
+
+		  dom.byId("queryResult").innerHTML="";
+		  //initialize InfoTemplate
+		   //infoTemplate = new InfoTemplate("${Member_Name}", "Name : ${Member_Name}<br/>Email : ${Contact_Email} <br />Phone: ${Phone_Number}<br>Website : <a href=${Website}  target='_blank'>${Website}</a>");
+		   infoTemplate = new InfoTemplate("${Member_Name}", "<b>Name</b> : ${Member_Name}<br/><b>Address</b>: ${Address_Website}</br><b>Email</b>: <a href=mailto:${Contact_Email}? Subject=Hello' target='_blank'>${Contact_Email}</a> <br /><b>Phone</b>: <a href=tel:${Phone_Number}>${Phone_Number}</a><br><b>Hours of Operation</b>: ${Profile_Hours}<br><b>Website</b> : <a href=${Website}  target='_blank'>${Website}</a><br><b>Drop off Directions</b>: <br><b>Description</b>: ${Hazardous_Waste}${Solid_Waste}${Construction_Demolition}");
+		   //${*}
+		   //infoTemplate = new InfoTemplate("Identify: ", "Phone: ${Phone_Number} ${Member_Name}");
+		   console.log(infoTemplate);
+		  //var featureLayer = new ArcGISDynamicMapServiceLayer(
+			//"http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer");
+
+		   /*
+		    var featureLayer = new FeatureLayer("https://services2.arcgis.com/r6iFVcMJeA4kB4GC/arcgis/rest/services/Recycling_Directory_View/FeatureServer/0",
+			{outFields: ["Member_Name","City", "Contact_Email", "Phone_Number", "Website","Hazardous_Waste"],
+		   infoTemplate: infoTemplate}  //set outFields and infoTemplate here, so we can use mouse-over to see them
+		   ); */
+
+		  /*
+		   var featureLayer = new FeatureLayer("https://testgis.iowadnr.gov/geospatial/rest/services/Recycle/FeatureServer/0",
+			{outFields: ["ObjectID", "Member_Name","City", "Contact_Email", "Phone_Number", "Website","Hazardous_Waste"],
+			mode: FeatureLayer.MODE_SNAPSHOT}
+		   //infoTemplate: infoTemplate}  //set outFields and infoTemplate here, so we can use mouse-over to see them
+		   ); */
+
+		   var featureLayer = new FeatureLayer("https://testgis.iowadnr.gov/geospatial/rest/services/Recycle_view/MapServer/0");
+
+		  		  //map.addLayer(featureLayer); //layer will be added later in showResult
+			//https://services2.arcgis.com/r6iFVcMJeA4kB4GC/arcgis/rest/services/Recycling_Directory/FeatureServer
+		  //initialize query task
+
+		  //console.log(featureLayer.defaultDefinitionExpression);
+		  //console.log(featureLayer.layerDefinitions);
+		  //queryTask = new QueryTask("https://services2.arcgis.com/r6iFVcMJeA4kB4GC/arcgis/rest/services/Recycling_Directory_View/FeatureServer/0");
+
+		  //queryTask = new QueryTask("https://testgis.iowadnr.gov/geospatial/rest/services/Recycle/FeatureServer/0")
+		  queryTask = new QueryTask("https://testgis.iowadnr.gov/geospatial/rest/services/Recycle_view/MapServer/0")
+		 // "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/0");
+
+		 //var graphicsLayer = new GraphicsLayer();
+		 //map.addLayer(graphicsLayer);
+
+
+		 query = new Query();
+		  query.returnGeometry = true;
+		  query.outSpatialReference = new SpatialReference(102100);
+
+		  query.outFields = ["Member_Name","Phone_Number", "Contact_Email", "Profile_Hours","Website","Address_Website","Hazardous_Waste"];
+
+			//query.outFields = ["CITY_NAME", "STATE_NAME", "POP1990"];
+
+			//infoTemplate = new InfoTemplate("${CITY_NAME}", "Name : ${CITY_NAME}<br/> State : ${STATE_NAME}<br />city : ${POP1990}");
+		  //create symbol for selected features
+		  symbol = new SimpleMarkerSymbol();
+		  symbol.setStyle(SimpleMarkerSymbol.STYLE_SQUARE);
+		  symbol.setSize(10);
+		  symbol.setColor(new Color([255,0,0,0.5]));
+
+		  symbol2 = new SimpleMarkerSymbol();
+		  symbol2.setStyle(SimpleMarkerSymbol.STYLE_CIRCLE);
+		  symbol2.setSize(11);
+		  symbol2.setColor(new Color([255,255,0,0.5]));
+
+	   function displayQueryLayer(){ //pass QueryCity(a function) as parameter
+		 //check to make sure the featurelayer above does not exist first
+		 console.log(map);
+          if(map.graphicsLayerIds.length > 0){  // not > 1
+          //if(map.graphics.graphics.length > 1){
+            for(let i = 0; i < map.graphicsLayerIds.length; i++){
+              if(map.graphicsLayerIds[i] == featureLayer.id){
+                map.removeLayer(featureLayer);
+                console.log("removed featureLayer");
+              }
+            }
+          }
+
+		  //map.addLayers([featureLayer]);
+		  //////////////////////////////////////
+
+		var query1 = new Query();
+          query1.returnGeometry = true;
+          query1.where = '1=1';
+          query1.outSpatialReference = new SpatialReference(102100);
+          query1.outFields = ["ObjectID",'Member_Name',"City","Website","X","Y"];
+
+          var symbol = new SimpleMarkerSymbol;
+          symbol.setStyle(SimpleMarkerSymbol.STYLE_SQUARE);
+          symbol.setSize(10);
+          symbol.setColor(new Color([255,0,0,0.5]));
+
+          queryTask.execute(query1, displayResults);
+
+          function displayResults(featureSet){
+            var features = featureSet.features;
+            if(features.length < 1){
+              console.log("Sorry no features to query");
+            }else{
+              for(let i = 0; i < features.length; i++){
+                let graphic = features[i];
+                graphic.setSymbol(symbol);
+                map.graphics.add(graphic);
+              }
+            }
+            map.graphics.on("click",function(evt){ //change from grapicslayer to maps. graphics
+				console.log(evt);
+              map.infoWindow.setTitle("Recycle Point");
+              map.infoWindow.setContent(
+                "ObjectID: " + evt.graphic.attributes.ObjectID+
+                "<br>Name: " + evt.graphic.attributes.Member_Name +
+                "<br>City: " + evt.graphic.attributes.City +
+                "<br>Website: " + evt.graphic.attributes.Website +
+				"<br>X: "+			evt.graphic.attributes.X +
+				"<br>Y: "+			evt.graphic.attributes.Y
+              );
+              map.infoWindow.show(evt.screenPoint, map.getInfoWindowAnchor(evt.screenPoint))
+            });
+          }
+			///////////////////////////////////////
+		 }
+
+		//displayQueryLayer();
+		  //initialize query
+
+
+		  //on(dom.byId("SearchSiteName"), "keypress", searchSiteName);
+		  //on(dom.byId("SearchZip"), "keyup", searchByZip);
+		  on(dom.byId("cityQuery"), "click", QueryCity);
+		  on(dom.byId("materialQuery"), "click", QueryMaterial);
+		  on(dom.byId("cityMaterialQuery"), "click", queryCityMaterial);
+		  //on(dom.byId("allIowa"), "click", allIowaSites);
+
+		  function allIowaSites(){
+			document.getElementById("message").innerHTML = "";
+			map.graphics.clear();
+			//showMap();
+			  //var qq =  "1=1" ; //get all sites
+			  var qq = "State like 'IA'";
+
+			  query.where = qq;
+			  featureLayer.setDefinitionExpression(qq);  //only show the selected features
+			  //console.log(qq);
+			  queryTask.execute(query,showResults);
+		  }
+
+		  function searchSiteName(){
+			document.getElementById("message").innerHTML = "";
+			map.graphics.clear();
+			//showMap();
+			  q3 =  "Member_Name like '%" + dom.byId("SearchSiteName").value+"%'";
+			  query.where = q3;
+			  featureLayer.setDefinitionExpression(q3);  //only show the selected features
+			  console.log(q3);
+			  queryTask.execute(query,showResults);
+		  }
+
+		  function searchByZip(){
+			document.getElementById("message").innerHTML = "";
+			map.graphics.clear();
+			//showMap();
+			var zipCode = dom.byId("SearchZip").value
+			if(zipCode.length==5 && !(isNaN(zipCode))) {
+			  q4 =  "Zip_code like '%" +zipCode+"%'";
+			  query.where = q4;
+			  featureLayer.setDefinitionExpression(q4);  //only show the selected features
+			  console.log(q4);
+			  queryTask.execute(query,showResults);
+			 }
+		  }
+
+		  //add an argument cName so we can call QueryCity from address search, but
+		  //when this function is called by click from cityQuery input, it automatically pass a Mouseevent to cName
+		  //therefore, we need to check the type to make sure it is not a string so as not to pass it to query.
+		  function QueryCity(cName) {
+			console.log(cName);
+			  //set query based on what user typed in for city;
+			  dom.byId("queryResult").innerHTML = "";
+			  //showMap();
+			  document.getElementById("message").innerHTML = "Searching...";
+			  map.graphics.clear();
+
+			  if (typeof(cName)!=='string'){
+			  q1 =  "City like '%" + dom.byId("city").value+"%'";
+
+			  } else{
+				//if(typeof cName==='string') {  //city name is passed
+				if(cName.length==5) {  //city name is passed
+					q1 =  "Zip_code like '%" + cName+"%'";
+				} else {  //zip code is passed
+					q1 =  "City like '%" + cName+"%'";
+				}
+			  }
+			  query.where = q1;
+			  console.log (q1);
+				//query.text = dom.byId("city").value;
+			  //execute query
+			  featureLayer.setDefinitionExpression(q1);  //only show the selected features
+			  console.log(q1);
+			  queryTask.execute(query,showResults);
+
+			}
+		  function QueryMaterial() {
+			dom.byId("queryResult").innerHTML = "";
+			//showMap();
+			map.graphics.clear();
+			document.getElementById("message").innerHTML = "Searching...";
+			if (map.graphics.length>0){
+				map.graphics.clear();
+			}
+			  //set query based on what user typed in for city;
+
+			 q2 =  "Solid_Waste like '%" + dom.byId("material").value+"%' or Electronics like '%" +
+			 dom.byId("material").value+"%' or Construction_Demolition like '%" +
+			 dom.byId("material").value+"%' or Hazardous_Waste like '%" + dom.byId("material").value+"%' or Organics like '%" +
+			 dom.byId("material").value+"%'";
+
+			 //q2 = "Hazardous_Waste like '" + dom.byId("material").value + "%'";
+			//var q1 =  "Hazardous_Waste like '%" + dom.byId("material").value+"%'";
+				//q.replace(/\s%/,"%");
+			  query.where = q2;
+			  console.log (q2);
+
+				//query.text = dom.byId("city").value;
+			  //execute query
+			  featureLayer.setDefinitionExpression(q2);
+
+			  queryTask.execute(query,showResults); //queryTask.execute returned a featureSet, which is used by showResult
+			}
+			function queryCityMaterial() {
+				dom.byId("queryResult").innerHTML = "";
+				//showMap();
+				document.getElementById("message").innerHTML = "Searching...";
+				map.graphics.clear();
+			  //set query based on what user typed in for city;
+
+			  //var q =  "City like '%" + dom.byId("city").value+"%'";
+			  //var q,q1,q2;
+			  q1= "City like '%" + dom.byId("city").value+"%'" //+"and Hazardous_Waste like '%" + dom.byId("material").value+"%'";
+			  q2 =  "Solid_Waste like '%" + dom.byId("material").value+"%' or Electronics like '%" + dom.byId("material").value+"%' or Construction_Demolition like '%" + dom.byId("material").value+"%' or Hazardous_Waste like '%" + dom.byId("material").value+"%' or Organics like '%" + dom.byId("material").value+"%'";
+			  //q=q1.concat(q2);
+			  q = q1+" and ("+q2+" )";
+			  query.where = q;
+			  console.log (q);
+
+			  //execute query
+			  featureLayer.setDefinitionExpression(q);
+			  console.log(q);
+			  queryTask.execute(query,showResults);
+			}
+
+			function showResults(featureSet) {
+			$("#editorDiv").show();
+				document.getElementById("message").innerHTML = "";
+			  //remove all graphics on the maps graphics layer
+			 //map.graphics.clear();  //without this, map will not zoom to selected sites correctly
+			 //var resultFeatures = new FeatureSet();
+			  //Performance enhancer - assign featureSet array to a single variable.
+			  var resultFeatures = featureSet.features;
+			  if (resultFeatures.length==0){
+				alert("No Recycle Sites found, please try a different query");
+			  }
+			  else {
+				//map.addLayer(featureLayer);
+
+			  //console.log(q2);
+
+			  //Loop through each feature returned
+			    for (var i=0;i<resultFeatures.length; i++) {
+					//Get the current feature from the featureSet.
+					//Feature is a graphic
+					var graphic = resultFeatures[i];
+					//var graphic = new Graphic( resultFeatures[i].geometry,symbol);
+					graphic.setSymbol(symbol);
+					//Add graphic to the map graphics featureLayer.
+					map.graphics.add(graphic);
+					//graphicsLayer.add(graphic);
+
+					//Set the infoTemplate.
+					graphic.setInfoTemplate(infoTemplate);
+					}
+				}
+
+			 dom.byId("queryResult").innerHTML=resultFeatures.length + " sites found. click on any one to get more info."
+
+			  if (resultFeatures.length !== 0) {
+				//map.setExtent(graphicsUtils.graphicsExtent(map.graphics.graphics), true);
+				map.setExtent(graphicsUtils.graphicsExtent(resultFeatures), true);
+				}
+				//map.infoWindow.show();
+
+			}
+
+
+			map.on('dbl-click', function(e) {
+				dom.byId("queryResult").innerHTML = "";
+				document.getElementById("message").innerHTML = "   Searching...";
+				map.graphics.clear();
+				mapPoint=e.mapPoint;
+				console.log(mapPoint);
+				query1 = new Query();
+				query1.geometry = mapPoint; // mapPoint obtained from view-click event.
+				var dist = $("#distance option:selected").val(); //get distance from dropdown box
+
+				query1.distance = dist;
+				query1.units = "miles";
+				query1.outSpatialReference = new SpatialReference(102100);
+				query1.returnGeometry = true;
+				//featureLayer.setDefinitionExpression("1=1");
+				//query1.outFields = ["Member_Name","City", "Contact_Email", "Phone_Number", "Website","Hazardous_Waste"];
+				query1.spatialRelationship = Query.SPATIAL_REL_CONTAINS;
+				//query1.where = q2;
+				//featureLayer.setDefinitionExpression(q2);
+
+				featureLayer.setDefinitionExpression(query1); ///
+
+				queryTask.execute(query1,showResults);
+				//document.getElementById("message").innerHTML = "";
+			});
+
+
+
+			//map.addLayers([featureLayer]);
+		  //featureLayer.on("mouse-over", showInfowindow);
+		  map.on("click", showInfowindow);
+		  //featureLayer.on("mouse-out", hideInfowindow);
+
+		function showInfowindow (evt){
+				//console.log(evt);
+				//map.graphics.clear();
+			//var graphic = new Graphic(evt.graphic.geometry, symbol2);
+				//var graphic = new Graphic(evt.mapPoint, symbol2);
+
+				//Add graphic to the map graphics layer. //new graphic on top of the other,
+				//not a good idea, that way, click again, new graphic will not show any info.
+				//map.graphics.add(graphic); //comment out 4/25/18, no impact?
+			evt.graphic.setSymbol(symbol2); //change the existing graphic symbol
+				//Set the infoTemplate.
+				map.infoWindow.setTitle(evt.graphic.getTitle());
+				map.infoWindow.setContent(evt.graphic.getContent());
+				//Show the infoWIndow at screenpoint
+				map.infoWindow.show(evt.screenPoint, map.getInfoWindowAnchor(evt.screenPoint));
+
+			}
+
+		function hideInfowindow (evt){
+				//map.graphics.clear();
+				//Show the infoWIndow at screenpoint
+				map.infoWindow.hide();
+			}
+
+		function showMap() {
+				var x = document.getElementById('map');
+				var y = document.getElementById('search');
+				var z = document.getElementById('spatialSearch');
+				//console.log(x.style);
+				//if (x.style.display === 'none') {
+					x.style.display = 'block';
+					y.style.display = 'block';
+					z.style.display = 'block';
+					y.style.zIndex = 50;
+
+				search.startup();  //start the search here
+				//change background image
+				$('body').css('background-image', 'none');
+				$('#title').hide();
+			}
+
+
+			// map.on("layers-add-result", initEditing); //move to line 242 before map.addLayers
+			//map.infoWindow.resize(400, 300);
+
+	/*	///////////////////////////////////////////
+		editToolbar = new Edit(map);
+
+        const layerArr = [featureLayer];
+
+        templatePicker = new TemplatePicker({
+            featureLayers: layerArr,
+            rows: "auto",
+            columns: 2,
+            grouping: true,
+            style: "height: auto; overflow: auto;"
+          }, "templatePickerDiv");
+
+          templatePicker.startup();
+
+          var layerInfos = [
+            {
+              'featureLayer': featureLayer,
+              'showAttachments': false,
+              'isEditable': true,
+              'fieldInfos': [
+
+				{'fieldName': 'ObjectID', 'isEditable': true, 'label': 'ObjectID:'},
+
+				{'fieldName': 'X', 'isEditable': true, 'label': 'X:'},
+				{'fieldName': 'Y', 'isEditable': true, 'label': 'Y:'},
+				{'fieldName': 'Member_ID', 'isEditable': true, 'label': 'Member_ID:'},
+				{'fieldName': 'Member_Name', 'isEditable': true, 'label': 'Member_Name:'},
+				{'fieldName': 'Contact_Email', 'isEditable': true, 'label': 'Contact_Email:'},
+				{'fieldName': 'Phone_Number', 'isEditable': true, 'label': 'Phone_Number:'},
+				{'fieldName': 'Website', 'isEditable': true, 'label': 'Website:'},
+				{'fieldName': 'Street', 'isEditable': true, 'label': 'Street:'},
+				{'fieldName': 'City', 'isEditable': true, 'label': 'City:'},
+				{'fieldName': 'Zip_Code', 'isEditable': true, 'label': 'Zip_Code:'},
+				{'fieldName': 'County', 'isEditable': true, 'label': 'County:'},
+				{'fieldName': 'State', 'isEditable': true, 'label': 'State:'},
+				{'fieldName': 'Status_1', 'isEditable': true, 'label': 'Status_1:'},
+				{'fieldName': 'Profile_Hours', 'isEditable': true, 'label': 'Profile_Hours:'},
+				{'fieldName': 'Construction_Demolition', 'isEditable': true, 'label': 'Construction_Demolition:'},
+				{'fieldName': 'Hazardous_Waste', 'isEditable': true, 'label': 'Hazardous_Waste:'},
+				{'fieldName': 'Organics', 'isEditable': true, 'label': 'Organics:'},
+				{'fieldName': 'Solid_Waste', 'isEditable': true, 'label': 'Solid_Waste:'},
+				{'fieldName': 'Address_Website', 'isEditable': true, 'label': 'Address_Website:'},
+				{'fieldName': 'Electronics', 'isEditable': true, 'label': 'Electronics:'}
+              ]
+            }
+          ];
+
+
+///////////////////////////////////////////////////////////////////
+		function initEditing(evt){
+		debugger;
+			 //Initialize Attribute Inspector
+		 attInspector = new AttributeInspector({
+            layerInfos: layerInfos
+          }, domConstruct.create("div"));
+
+          attInspector.startup();
+
+		  try{
+            attInspector.layerInfos[0].isEditable = false;
+          }catch(e){
+            console.log("no att inspector");
+            console.log(e);
+          }
+
+
+		  //add a save button next to the delete button
+		 var saveButton = new Button({ label: "Save", class: "saveButton",id:"theSaveButton"},domConstruct.create("div"));
+            domConstruct.place(saveButton.domNode, attInspector.deleteBtn.domNode, "last");
+
+		//***********************************************************
+		 var selectQuery = new Query;
+
+          featureLayer.on("doubleclick", function(evt) {
+            selectQuery.geometry = evt.mapPoint;
+            selectQuery.distance = 0.1;
+            selectQuery.units = "miles";
+            selectQuery.returnGeometry = true;
+
+			 //added this code to change the save button back to normal
+            document.getElementById("theSaveButton").innerHTML = "Save";
+            document.getElementById("theSaveButton").style.color = "black";
+			document.getElementById("editingStatus").innerHTML = "Editing started";
+
+            featureLayer.selectFeatures(selectQuery,FeatureLayer.SELECTION_NEW,function(features){
+              if(features.length > 0){
+                updateFeature = features[0];
+                title = features[0].getLayer().name;
+                map.infoWindow.setTitle(title);
+                map.infoWindow.show(evt.screenPoint, map.getInfoWindowAnchor(evt.screenPoint));
+              }else{
+                map.infoWindow.hide();
+              }
+            });
+
+            event.stop(evt);
+          });
+
+          map.infoWindow.on("hide",function(){
+            featureLayer.clearSelection();
+          });
+
+            saveButton.on("click", function() {
+              if(bool){
+                updateFeature.getLayer().applyEdits(null, [updateFeature], null);
+                //change text to Saved and the color to red
+                document.getElementById("theSaveButton").innerHTML = "Saved";
+                document.getElementById("theSaveButton").style.color = "red";
+              }else{
+                console.log("editing session is turned off");
+              }
+            });
+
+            attInspector.on("attribute-change", function(evt) { //the returned evt is a feature
+              //store the updates to apply when the save button is clicked
+              updateFeature.attributes[evt.fieldName] = evt.fieldValue;
+			  //without the following, update attributes will have error
+			  updateFeature.getLayer().applyEdits(null,[updateFeature], null);
+
+            });
+
+            attInspector.on("delete", function(evt) {
+			 if (bool){
+			  var r = confirm("Are you sure you want to delete the point?");
+				if (r == true) {
+					evt.feature.getLayer().applyEdits(null, null, [evt.feature]);
+					map.infoWindow.hide();
+					document.getElementById('editingStatus').innerHTML="Deleted";
+				} else {
+					document.getElementById('editingStatus').innerHTML="No delete";
+				}
+
+
+			 } else {
+				document.getElementById('editingStatus').innerHTML="Editing is not enabled, click start edit to enable it";
+			 }
+
+            });
+
+            map.infoWindow.setContent(attInspector.domNode);
+            map.infoWindow.resize(350, 240);
+
+            //attInspector.startup();
+
+
+
+          var drawToolbar = new Draw(map);
+
+          var selectedTemplate;
+          templatePicker.on("selection-change", function() {
+            if(bool){
+              if( templatePicker.getSelected() ) {
+                selectedTemplate = templatePicker.getSelected();
+              }
+              switch (selectedTemplate.featureLayer.geometryType) {
+                case "esriGeometryPoint":
+                  drawToolbar.activate(Draw.POINT);
+                  break;
+              }
+            }else{
+              console.log("Editing has stopped click to start editing");
+            }
+
+          });
+
+          drawToolbar.on("draw-end", function(evt) {
+		  //console.log(evt.geometry.x);
+           drawToolbar.deactivate();
+           editToolbar.deactivate();
+		   var mp = webMercatorUtils.webMercatorToGeographic(evt.geometry);
+		   selectedTemplate.template.prototype.attributes.X = mp.x.toFixed(8); //evt.geometry.x; //access filed value in editor
+			selectedTemplate.template.prototype.attributes.Y = mp.y.toFixed(8); //evt.geometry.y;
+		   var newAttributes = lang.mixin({}, selectedTemplate.template.prototype.attributes);
+           //var newAttributes = selectedTemplate.template.prototype.attributes;
+           var newGraphic = new Graphic(evt.geometry, null, newAttributes);
+           selectedTemplate.featureLayer.applyEdits([newGraphic], null, null);
+           //map.infoWindow.setTitle(title);
+           map.infoWindow.show(evt.geometry, InfoWindow.ANCHOR_UPPERRIGHT);
+         });
+
+         featureLayer.on("dbl-click", function(evt) {
+           console.log("clicked...");
+           event.stop(evt);
+           map.infoWindow.hide();
+           if(bool){
+             editToolbar.activate(Edit.MOVE, evt.graphic);
+           }else{
+             console.log("editing is not enabled");
+           }
+
+           editToolbar.on("graphic-move-stop", function(evt){
+             editToolbar.refresh();
+             editToolbar.deactivate();
+           });
+
+           editToolbar.on("deactivate", function(evt){
+             console.log("deactivating...");
+             featureLayer.applyEdits(null, [evt.graphic], null);
+           });
+         });
+		//************************************************************
+
+	}
+
+		//document.getElementById("OpenEditPage").onclick = function() {startEditing()};
+
+	   document.getElementById("startButton").onclick = function() {
+		clearGraphics();
+		startEditing();
+		};
+
+        document.getElementById("stopButton").onclick = function() {
+
+		displayQueryLayer();
+		stopEditing();
+		};
+
+
+		function startEditing(){
+		  //clearGraphics();
+		  console.log(attInspector);
+		  document.getElementById('templatePickerDiv').style.visibility='visible';
+          console.log("Editing has begun!");
+          bool = true;
+
+          try{
+            attInspector.layerInfos[0].isEditable = true;
+          }catch(e){
+            console.log("no att inspector");
+            console.log(e);
+          }
+
+          //featureLayer.on
+        }
+        function stopEditing(){
+		  document.getElementById('templatePickerDiv').style.visibility='hidden';
+          bool = false;
+          console.log("stopping......");
+          try{
+            attInspector.layerInfos[0].isEditable = false;
+            //templatePicker.destroy();
+          }catch(e){
+            console.log("no att inspector");
+            console.log(e);
+          }
+        }
+
+        function clearGraphics(){
+
+          //if(graphicsLayer.graphics.length > 0){
+          if(map.graphics.graphics.length > 0){
+            map.graphics.clear();
+            map.addLayers([featureLayer]);
+			initEditing();
+
+          }else{
+            console.log("no graphics to clear");
+          }
+        } */
+
+	});
+	// Find Recycle sites by material  Find Recycle Sites by City  Find Recycle Sites by City and Material
+	function showHideSearch() {
+		var x = document.getElementById('showSearch');
+		if (x.style.display === 'none') {
+			x.style.display = 'block';
+		} else {
+			x.style.display = 'none';
+		}
+	 }
+	function newPage() {
+            //window.open("https://dev-7.iowadnr.gov/maps/recycle/newPage.html");
+            //self.location='newFacility.html';
+            @*var id = @Model.ObjectID;*@
+            //var id = 10;
+            //window.location.href = '@Url.Action("Index", "RecycleSites")/';
+            url = '@Url.Action("Create", "RecycleSites")/';
+            window.open(url, "_blank");
+        }
+
+	function OpenEditPage(){
+		//ctr ='?center = 42.3456,-93.2334&level=13'
+		ctr ='?'+map.extent.getCenter().x+','+map.extent.getCenter().y+'&'+map.getLevel();
+		//console.log(ctr);
+		//window.open("https://dev-7.iowadnr.gov/maps/recycle/editing_final.html"+ctr, "_blank");
+		var l = location.href;
+		pageLocation=l.replace(/\/[^/]+$/,'/editing_final.html');
+
+		//pass the map center coordinate and zoom level to url as query string, will be use by editing page
+		//to zoom map to the same location and level when loaded.
+		window.open(pageLocation+ctr);
+	};
+
+    </script>
+</head>
+
+<body>
+    <div class='container'>
+        <div id="main" style="height:95%">
+            <div class='row'>
+                <div class="col-lg-12 col-sm-12 col-md-8">
+                    <br>
+                    <div class='lang'>
+                        <!--
+                          <a id="idnr_logo_link" title="Iowa Department of Natural Resources" href="http://www.iowadnr.gov/">
+                                      <img id="idnr_logo" src="https://programs.iowadnr.gov/maps/apis/idnr/js/gov/iowadnr/compactmap/images/logo_brown.png" style="float:clear; margin:5px;"
+                                      alt="Iowa Department of Natural Resources" style="border-width:0px;" /></a>
+                                  <img src="image/recycle.jpg" style="float:right;"
+                                      alt="Iowa Department of Natural Resources" style="border-width:0px;" /></a> -->
+                        <!--<div id='policy'>
+                        <a href="https://www.iowa.gov/policies/disclaimer" class='hidden-print'><h4>Disclaimer</h4></a>
+                        </div> -->
+                        <a href="https://www.iowa.gov/policies/disclaimer" class='hidden-print'><h4>Disclaimer</h4></a>
+                        <h1 id='title' style="color: blue;">Iowa Recycles</h1>
+                        <h4 style="text-align:'left';">Find a collection location for your unwanted materials</h4>
+                    </div>
+
+                    <!--
+                    <div>
+                    <button onclick="showHideSearch()"><b>Toggle Search</b></button>
+                    <button onclick="newPage()"><b>Add a new facility</b></button>
+                    </div> -->
+                    <br>
+                    <div id='showSearch'>
+                        <div>
+                            <select id="material" style="width:230px;">
+                                <!-- title="click to type in a material name or partial name to select it from the list"Dropdown List Option -->
+                            </select>
+
+                        </div>
+                        <span><input type="button" value="Material" id="materialQuery" title="Click to find all sites of selected material" /></span>
+                        <!--<input type="button" value="spatial query" id="sQuery" /> -->
+                    </div>
+                    <br>
+                    <select id="city" style="width:230px;">
+                        <!-- Dropdown List Option -->
+                    </select>
+                    <div>
+                        <input type="button" value="Location" id="cityQuery" title="Click to find all sites in the selected city" /><br>
+                        <br>
+                        <input type="button" value="Go" id="cityMaterialQuery" title="Click to find all sites in the selected city for the selected material" /><span id="message"></span>
+
+                        <!--
+                        <input type="button" value="All Sites in Iowa" id="allIowa" title="Click to find all sites in Iowa"/>
+                        <br><br>
+                        <span><input type="text" placeholder="Search by Site Name" id="SearchSiteName" title="Type site name keyword"/></span>
+                         <span><input type="text" placeholder="Search by zip code" id="SearchZip" title="type in a zip code"/></span>
+                        <br><br> -->
+                    </div>
+                    <div>
+                        <br>
+                        <!--<button onclick="showHideSearch()"><b>Toggle Search</b></button> -->
+
+                        @*
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                       
+                        }
+                        else
+                        {
+                            <label>Log in to View</label>
+                        }
+                         
+                            *@
+
+                         <button onclick="newPage()" title="Click here to add new facility"><b>Interested In Adding Your Business or Service?</b></button>
+                    </div>
+                    <div id='spatialSearch'>
+                        <p id='message' style='color:white; background-color:#2f5e8c; font-size:1.1em; padding:3px;'>
+                            Double click anywhere to find all recycle sites within:
+                            <span>
+                                <select id='distance' style='color:#2f5e8c;'>
+                                    <option value="5">5 miles</option>
+                                    <option value="10">10 miles</option>
+                                    <option value="20">20 miles</option>
+                                    <option value="50">50 miles</option>
+                                </select>
+                            </span>
+                            <span><button class="btn btn-default hidden-print" onclick="OpenEditPage()" id="OpenEditPage">Editing(DNR only)</button></span>
+                        </p>
+
+                        <!--
+                        <div>
+                        <button class="btn btn-default hidden-print" onclick="OpenEditPage()" id="OpenEditPage">Editing(DNR only)</button>
+                        </div>  -->
+
+                    </div>
+                </div>
+            </div> <!-- end "showSearch" -->
+            <br>
+            <p id='queryResult' style="color:white; width: 350px; font-size:15px;background-color:#2f5e8c; margin-top: 5px;"></p>
+            <div id="map">
+
+                <div id="search" title="Find address by street name, zip or lat long">
+                    <br>
+                    <div id="LocateButton"></div>
+                    <div id="BasemapToggle"></div>
+                </div>
+                <!--<div id="scalebar" ></div> -->
+                <div class="logo">
+                    <!--<img src="image/mcdeid_ada_hayden_whitetext1.svg" onerror="this.onerror=null; this.src='image/mcdeid_ada_hayden.png'">
+                    -->
+                </div>
+            </div>
+        </div>
+        <!--
+           <div style="position:absolute; right:20px; top:10px; z-Index:999;">
+               <div data-dojo-type="dijit/TitlePane"
+                    data-dojo-props="title:'Switch Basemap', closable:false, open:false">
+                 <div data-dojo-type="dijit/layout/ContentPane" style="width:380px; height:280px; overflow:auto;">
+                   <div id="basemapGallery"></div>
+                 </div>
+               </div>
+             </div>
+
+         <div style="padding:10px;" id="editorDiv">
+
+         <div id="templatePickerDiv"></div>
+         <button id="startButton">Start Edit</button>
+         <button class="btn stop" id="stopButton">Stop Editing</button>
+         <div id="editingStatus">Editing Status</div>
+        </div> -->
+        <!--
+        <div id="rightPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'right'">
+               <div id="templatePickerDiv"></div>
+               <button id="startButton">Start Edit</button>
+               <button class="btn stop" id="stopButton">Stop Editing</button>
+               <!- -
+               <button class="btn bl" id="clearButton">Clear graphics</button>
+               <button class="btn stop" id="queryButton">Display Query</button>
+               - ->
+               <div style="padding:10px;" id="editorDiv"></div>
+               <div id="editingStatus">Editing Status</div>
+         </div> -->
+
+ </div>
+</body>
+</html>
